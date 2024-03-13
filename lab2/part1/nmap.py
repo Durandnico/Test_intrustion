@@ -140,6 +140,8 @@ def print_res(filter = ["OPEN" , "CLOSED", "FILTERED", "UNFILTERED", "OPEN|FILTE
     print("port scans : " + str(len(res)))
     count = 0
 
+    res.sort(key=lambda x: int(x[0].split("/")[0]))
+
     for r in res:
         if r[1] in filter:
             print(r[0] + "   \t" + r[1])
