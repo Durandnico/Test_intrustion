@@ -8,7 +8,7 @@ res = []
 def icmp_ping(ipv4):
     global res
 
-    print("ping : " +  ipv4)
+    # print("ping : " +  ipv4)
 
     icmp_ping = IP(dst=ipv4)/ICMP()
         
@@ -20,18 +20,25 @@ def icmp_ping(ipv4):
         res.append(ipv4)
     
 def icmp_scan_ips(ip_addrs):
+    global res
     res = []
+    
+    print("Scanning " + str(len(ip_addrs)) + " IPs...")
 
     for ip in ip_addrs:
         thread = Thread(target = icmp_ping, args = (ip,))
         thread.start()
     
     thread.join()
+
+    print("Found " + str(len(res)) + " active IPs")
     for r in res:
         print(r)
     
         
 def icmp_scan_network(subnet, mask):
+    print("ICMP Scan")
+    print("Scanning network " + subnet + " with mask " + mask)
     icmp_scan_ips(nutil.get_ips_in_subnet(subnet, mask))
 
 

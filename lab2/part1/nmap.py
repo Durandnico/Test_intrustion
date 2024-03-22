@@ -126,7 +126,11 @@ def udp_scan_port(ipv4, port):
 
 
 def scan_ports(ipv4, ports, scan_fct):
+    global res
     res = []
+
+    print("Scan " + "SYN" if scan_fct == syn_scan_port else "FULL TCP" if scan_fct == full_tcp_scan_port else "FIN" if scan_fct == fin_scan_port else "ACK" if scan_fct == ack_scan_port else "UDP")
+    print("Scanning " + ipv4 + " ports...")
 
     for port in ports:
         thread = Thread(target = scan_fct, args = (ipv4, port))
@@ -155,6 +159,8 @@ def main():
     ip = nutil.get_ip(iface)
     mask = nutil.get_mask(iface)
     subnet = nutil.get_subnet(ip, mask)
+    # ports 1 to 1024 and 8070 to 8100
+    ports = list(range(1, 1025)) + list(range(8070, 8101))
     # scan_ports("192.168.50.2", range(1, 1024), full_tcp_scan_port)
     # print("====================================")
     # scan_ports("192.168.50.2", range(1, 1024), syn_scan_port)

@@ -7,7 +7,7 @@ res = []
 
 def arp_scan(ipv4):
     global res
-    print("scanning : " +  ipv4)
+    # print("scanning : " +  ipv4)
 
     arp_request = ARP(pdst=ipv4)
     broadcast = Ether(dst="ff:ff:ff:ff:ff:ff")
@@ -21,29 +21,24 @@ def arp_scan(ipv4):
         res.append(answer[1].psrc + " | " + answer[1].hwsrc)
 
 def arp_scan_ips(ip_addrs):
+    global res
+    res = []
+
+    print("Scanning " + str(len(ip_addrs)) + " IPs...")
+    
     for ip in ip_addrs:
         thread = Thread(target = arp_scan, args = (ip,))
         thread.start()
     
     thread.join()
+    print("Found " + str(len(res)) + " active IPs")
     for r in res:
         print(r)
 
 def arp_scan_network(subnet, mask):
-    mask_split = list(  map( int, mask.split('.') ))
-    subnet_split = list(map(int, subnet.split('.')))
-    
-    ip_addrs = []
-    for i in range(256 - mask_split[0]):
-        for j in range(256 - mask_split[1]):
-            for k in range(256 - mask_split[2]):
-                for l in range(256 - mask_split[3]):
-                    ip_addrs.append(str(subnet_split[0] + i) + "." + str(subnet_split[1] + j) + "." + str(subnet_split[2] + k) + "." + str(subnet_split[3] + l))
-
-
-    ip_addrs.pop() # remove broadcast address
-    ip_addrs.pop(0) # remove network address
-    arp_scan_ips(ip_addrs)
+    print("ARP Scan")
+    print("Scanning network " + subnet + " with mask " + mask)
+    arp_scan_ips(nutil.get_ips_in_subnet(subnet, mask))
 
 
 def main():
