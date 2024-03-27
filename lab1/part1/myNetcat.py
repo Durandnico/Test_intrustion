@@ -143,7 +143,8 @@ def shell_execute(command):
     # treat the request
     response = ""
     try:
-        response = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True, text=True)
+        response = subprocess.check_output(command, stderr=subprocess.STDOUT, shell=True)
+        response = response.decode()
     except subprocess.CalledProcessError as e:
         response = e.output
         print("error: " + e.output)
